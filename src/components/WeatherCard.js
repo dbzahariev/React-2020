@@ -20,7 +20,7 @@ const WeatherCard = ({ mainData }) => {
     backgroundColor = `linear-gradient(
       to top,
       rgb(255, ${heightColor}, 0),
-      rgb(255, ${lowColor}, 0)
+      rgb(255, ${Math.abs(lowColor)}, 0)
     )`;
   } else {
     // This is for cold weather
@@ -29,7 +29,7 @@ const WeatherCard = ({ mainData }) => {
     backgroundColor = `linear-gradient(
       to top,
       rgb(0, ${heightColor}, 255),
-      rgb(0, ${lowColor}, 255)
+      rgb(0, ${Math.abs(lowColor)}, 255)
     )`;
   }
 
