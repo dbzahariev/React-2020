@@ -4,4 +4,8 @@
 .App {
   margin: 0 auto;
   color: white;
+  align-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
