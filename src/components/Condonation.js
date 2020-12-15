@@ -14,11 +14,17 @@ const Condonation = ({ temp, condition }) => {
     text-align: center;
   `;
 
+  const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `;
+
   return (
-    <div>
+    <Container>
       <Temp>{temp} °C</Temp>
       <State>{condition}</State>
-    </div>
+    </Container>
   );
 };
 
