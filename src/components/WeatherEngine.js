@@ -1,67 +1,57 @@
 import React, { useState, useEffect } from "react";
 import WeatherCard from "./WeatherCard";
 
-const WeatherEngine = () => {
-  const location = "Plovdiv";
+const WeatherEngine = ({ location }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const [city, setCity] = useState(location);
-  const [searchCity, setSearchCity] = useState(location);
-
-  const [mainData, setMainData] = useState({
+  const [weather, setWeather] = useState({
     country: "",
     city: "",
-    condition: { name: "", temp: 0 },
+    conditionName: "",
+    temp: "",
   });
 
-  const data = async () => {
-    return (
-      await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=f42ee9792bd54a73ae2105200200111&q=${city}`
-      )
-    ).json();
-  };
+  const getWeather = async (q) => {
+    setLoading(true);
 
-  const searchCityFromApi = async (cityForSearch) => {
-    return (
-      await fetch(
-        `http://api.weatherapi.com/v1/search.json?key=f42ee9792bd54a73ae2105200200111&q=${cityForSearch}`
-      )
-    ).json();
-  };
+    let cityForSearch = "";
 
-  const fixData = () => {
-    data().then((res) => {
-      let conditionFromRes = { name: "", temp: 0 };
-      if (res.current) {
-        if (res.current.condition.code === 1000) {
-          conditionFromRes.name = "Clear";
-        }
-        conditionFromRes.temp = res.current.temp_c;
-        setMainData({
-          country: res.location.country,
-          city: res.location.name,
-          condition: conditionFromRes,
-        });
+    try {
+      let resFromSearchForCity = await (
+        await fetch(
+          `http://api.weatherapi.com/v1/search.json?key=f42ee9792bd54a73ae2105200200111&q=${q}`
+        )
+      ).json();
+
+      if (resFromSearchForCity.length >= 1) {
+        cityForSearch = resFromSearchForCity[0].region;
+      } else {
+        setError(true);
       }
-    });
-    return null;
-  };
 
-  const handleSearch = (event) => {
-    event.preventDefault();
-    if (searchCity.length > 0) {
-      searchCityFromApi(searchCity).then((res) => {
-        if (res.length >= 1) {
-          setCity(res[0].region);
-        }
+      let apiRes = await fetch(
+        `http://api.weatherapi.com/v1/current.json?key=f42ee9792bd54a73ae2105200200111&q=${cityForSearch}`
+      );
+      let res = await apiRes.json();
+      let condition = res.current.condition;
+
+      setWeather({
+        country: res.location.country,
+        city: res.location.name,
+        conditionName: condition.code === 1000 ? "Clear" : condition.text,
+        temp: res.current.temp_c,
       });
+    } catch (errorFromRes) {
+      setError(true);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
-    fixData();
-    // eslint-disable-next-line
-  }, [city]);
+    getWeather(location);
+  }, [location]);
 
   return (
     <div
@@ -69,18 +59,38 @@ const WeatherEngine = () => {
         width: "215px",
       }}
     >
-      <form>
-        <input
-          value={searchCity}
-          onChange={(res) => {
-            setSearchCity(res.target.value);
-          }}
-        ></input>
-        <button onClick={(e) => handleSearch(e)}>Search</button>
-      </form>
-      {(mainData.city || "").length > 0 ? (
-        <WeatherCard mainData={mainData} />
-      ) : null}
+      {error ? (
+        <div style={{ color: "black" }}>
+          There hes been error!
+          <br />
+          <button
+            onClick={() => {
+              setError(false);
+            }}
+          >
+            {"Reset"}
+          </button>
+        </div>
+      ) : (
+        <div>
+          {loading ? (
+            <div style={{ color: "black" }}>Loading</div>
+          ) : (
+            <div>
+              {(weather.city || "").length > 0 ? (
+                <WeatherCard
+                  temp={weather.temp}
+                  condition={weather.conditionName}
+                  city={weather.city}
+                  country={weather.country}
+                  mainData={weather}
+                  getWeather={getWeather}
+                />
+              ) : null}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -4,14 +4,10 @@ import Location from "./Location";
 import Icon from "./Icon";
 import Condonation from "./Condonation";
 
-const WeatherCard = ({ mainData }) => {
+const WeatherCard = ({ temp, condition, city, country, getWeather }) => {
   let heightColor = 0;
   let lowColor = 0;
   let backgroundColor = "";
-  let temp = mainData.condition.temp;
-  let condition = mainData.condition.name;
-  let city = mainData.city;
-  let country = mainData.country;
 
   if (temp > 12) {
     // This is for hot weather
@@ -45,14 +41,9 @@ const WeatherCard = ({ mainData }) => {
     border-radius: 15px;
   `;
 
-  if (city === "") {
-    console.log("help", mainData);
-    return null;
-  }
-
   return (
     <Card>
-      <Location city={city} country={country} />
+      <Location city={city} country={country} getWeather={getWeather} />
       <Icon condition={condition} />
       <Condonation temp={temp} condition={condition} />
     </Card>
