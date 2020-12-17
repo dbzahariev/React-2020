@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <WeatherEngine location={"Plovdiv"} />
-      <WeatherEngine location={"Varna"} />
+      {/* <WeatherEngine location={"Varna"} /> */}
     </div>
   );
 }

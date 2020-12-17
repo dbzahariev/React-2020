@@ -54,55 +54,47 @@ const WeatherEngine = ({ location }) => {
     getWeather(location);
   }, [location]);
 
+  if (error) {
+    return (
+      <div style={{ color: "black" }}>
+        There hes been error!
+        <br />
+        <button
+          onClick={() => {
+            setError(false);
+          }}
+        >
+          {"Reset"}
+        </button>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          width: "200px",
+          height: "240px",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <PulseLoader size={15} margin={5} color={"purple"} />
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        width: "215px",
-      }}
-    >
-      {error ? (
-        <div style={{ color: "black" }}>
-          There hes been error!
-          <br />
-          <button
-            onClick={() => {
-              setError(false);
-            }}
-          >
-            {"Reset"}
-          </button>
-        </div>
-      ) : (
-        <div>
-          {loading ? (
-            <div
-              style={{
-                display: "flex",
-                width: "200px",
-                height: "240px",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <PulseLoader size={15} margin={5} color={"purple"} />
-            </div>
-          ) : (
-            <div>
-              {(weather.city || "").length > 0 ? (
-                <WeatherCard
-                  temp={weather.temp}
-                  condition={weather.conditionName}
-                  city={weather.city}
-                  country={weather.country}
-                  mainData={weather}
-                  getWeather={getWeather}
-                />
-              ) : null}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    <WeatherCard
+      temp={weather.temp}
+      condition={weather.conditionName}
+      city={weather.city}
+      country={weather.country}
+      mainData={weather}
+      getWeather={getWeather}
+    />
   );
 };
 
