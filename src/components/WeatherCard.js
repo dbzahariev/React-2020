@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import Location from "./Location";
 import Icon from "./Icon";
 import Condonation from "./Condonation";
+import { motion } from "framer-motion";
 
 const WeatherCard = ({ temp, condition, city, country, getWeather }) => {
   let heightColor = 0;
@@ -42,11 +43,13 @@ const WeatherCard = ({ temp, condition, city, country, getWeather }) => {
   `;
 
   return (
-    <Card>
-      <Location city={city} country={country} getWeather={getWeather} />
-      <Icon condition={condition} />
-      <Condonation temp={temp} condition={condition} />
-    </Card>
+    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+      <Card>
+        <Location city={city} country={country} getWeather={getWeather} />
+        <Icon condition={condition} />
+        <Condonation temp={temp} condition={condition} />
+      </Card>
+    </motion.div>
   );
 };
 
